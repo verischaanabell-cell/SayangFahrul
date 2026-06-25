@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For You 🤍</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://googleapis.com" rel="stylesheet">
+  
+  <style>
+    /* PENGATURAN AGAR HALAMAN TIDAK MEROSOT KE BAWAH */
+    .page {
+      display: none !important;
+    }
+    .page.active {
+      display: flex !important; /* Diubah ke flex agar alignment class di bawah bekerja */
+    }
+    .pin-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 12px !important;
+      width: 280px !important;
+      position: fixed !important;
+      left: 50% !important; /* Diubah ke 50% agar transform X tepat di tengah layar */
+      bottom: 50px !important;
+      transform: translateX(-50%) !important;
+      z-index: 9999 !important;
+    }
+    .pin-grid button {
+      background-color: #ffffff !important;
+      color: #1a4373 !important;
+      border: none !important;
+      border-radius: 12px !important;
+      padding: 15px 0 !important;
+      font-size: 20px !important;
+      font-weight: bold !important;
+      cursor: pointer;
+    }
+    .dot.active {
+      background-color: #1a4373 !important; /* Warna titik saat PIN diketik */
+    }
+    /* Mengatur kontainer halaman agar semua elemen rata tengah */
+    .page {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    /* Mengatur gambar kucing agar pas di tengah dan ukurannya proporsional */
+    .page img {
+      max-width: 50%; /* Mengecilkan sedikit lagi agar space layar lebih luas */
+      height: auto;
+      display: block;
+      margin: 0 auto 10px auto; /* Memaksa posisi tepat di tengah secara horizontal */
+    }
+
+    /* Memastikan teks judul dan teks clue membungkus dengan rapi ke bawah */
+    .page h2, .page p {
+      width: 100%;
+      word-wrap: break-word;
+      margin: 10px 0;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+    
+    /* Tambahan style untuk efek ketik agar rapi */
+    .letter {
+      max-width: 90%;
+      margin: 20px auto;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Halaman 1: Password -->
+    <div class="page active" id="page1">
+		<a href="https://imgbb.com/"><img src="https://i.ibb.co/sXnPCQL/IMG-8842.gif" alt="IMG 8842" border="0"></a>
+      <h2>Hi love, ayo tebak passwordnya,<br>i bet u knoww!!</h2>
+      <div class="dots">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+
+      <div class="pin-grid">
+        <button type="button" onclick="pressKey('1')">1</button>
+        <button type="button" onclick="pressKey('2')">2</button>
+        <button type="button" onclick="pressKey('3')">3</button>
+        <button type="button" onclick="pressKey('4')">4</button>
+        <button type="button" onclick="pressKey('5')">5</button>
+        <button type="button" onclick="pressKey('6')">6</button>
+        <button type="button" onclick="pressKey('7')">7</button>
+        <button type="button" onclick="pressKey('8')">8</button>
+        <button type="button" onclick="pressKey('9')">9</button>
+        <button type="button" style="visibility: hidden;"></button>
+        <button type="button" onclick="pressKey('0')">0</button>
+        <button type="button" onclick="pressBackspace()">⌫</button>
+      </div>
+      <p class="clue">clue : your birthday</p>
+    </div>
+
+    <!-- Halaman 2: Allo Sayang -->
+    <div class="page" id="page2">
+      <a href="https://imgbb.com/"><img src="https://i.ibb.co/8gzG4jkC/IMG-8839.gif" alt="IMG 8839" border="0"></a>
+      <p class="hi">Hayy</p>
+      <h2>Ojikuu 🤍🤏🏻 </h2>
+      <button class="btn" onclick="nextPage(3)">tap disini sayang &lt;3</button>
+    </div>
+
+    <!-- Halaman 3: Ready -->
+    <div class="page" id="page3">
+      <a href="https://imgbb.com/"><img src="https://i.ibb.co/Nndwptqf/IMG-8840.gif" alt="IMG 8840" border="0"></a>
+      <h2>are you readyy to open thisss?</h2>
+      <div class="btn-group">
+        <button class="btn" onclick="nextPage(4)">INGYAHH</button>
+        <button class="btn-outline" onclick="nextPage('3-5')">emohh :p</button>
+      </div>
+    </div>
+
+    <!-- Halaman 3.5: Kalau klik No -->
+    <div class="page" id="page3-5">
+      <a href="https://imgbb.com/"><img src="https://i.ibb.co/gF4kGK4T/IMG-8841.gif" alt="IMG 8841" border="0"></a>
+      <h2>DIHH GITU YA SKRANG SAYANG<br>SAMA VENUSS ☹️</h2>
+      <button class="btn" onclick="nextPage(3)">back</button>
+    </div>
+
+    <!-- Halaman 4: Ultah 24 -->
+    <div class="page" id="page4">
+      <a href="https://imgbb.com/"><img src="https://i.ibb.co/DDzT3DKP/IMG-8829.gif" alt="IMG 8829" border="0"></a>
+      <h2>Hari ini,<br>Pak Tua pemarah kesayanganku<br>berumur 24!<br> lop lop u my lopp 🤍</h2>
+      <button class="btn" onclick="nextPage(5)">open sekarang yugg</button>
+    </div>
+
+    <!-- Halaman 5: Ucapan + Foto -->
+    <div class="page" id="page5">
+      <a href="https://imgbb.com/"><img src="https://i.ibb.co/d4yBhzq7/IMG-8849.gif" alt="IMG 8849" border="0"></a>
+      <h2>Happy birthday to my man<br>who makes my world better.<br>My most handsome, loving, and<br>caring boyfriend 🤍</h2>
+      <p>I love youu so muchh!!!</p>
+      <button class="btn" onclick="nextPage(6)">i have something for u 💌</button>
+    </div>
+
+    <!-- Halaman 6: Galeri 1 -->
+    <div class="page" id="page6">
+      <a href="https://ibb.co/NnfLMx4S"><img src="https://i.ibb.co/wr8Kfyvs/IMG-5314.jpg" alt="IMG-5314" border="0"></a>
+      <p>This was our favorite picture,<br>a moment I'll always remember</p>
+      <button class="btn" onclick="nextPage(7)">KLIK INI SAYANG</button>
+    </div>
+
+    <!-- Halaman 7: Galeri 2 -->
+    <div class="page" id="page7">
+	  <a href="https://ibb.co/fzx8j0q1"><img src="https://i.ibb.co/ksS3Nc5H/IMG-5078.jpg" alt="IMG-5078" border="0"></a>
+      <p>Ocean waves, chilly breeze and my favorite people.<br>Beach day with family and my love. 🌊🤍</p>
+      <button class="btn" onclick="nextPage(8)">klik ini lgi cayang&lt;3</button>
+    </div>
+
+    <!-- Halaman 8: Playlist -->
+    <div class="page" id="page8">
+      <h2>for u 💿</h2>
+      <!-- Gambar album art diganti ke icon universal musik yang valid -->
+      <a href="https://open.spotify.com/track/5ViLKrbyL3HD6wsq3AB9eI" target="_blank">
+        <img src="https://icons8.com" alt="White Keys - Dominic Fike" style="width: 150px; height: 150px; border-radius: 12px; display: block; margin: 0 auto 15px auto; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
+      </a>
+      <button class="btn" onclick="nextPage(9)">Lanjut →</button>
+    </div>
+
+    <!-- Halaman 9: Surat Panjang -->
+    <div class="page" id="page9">
+      <div class="letter">
+        <h2>Happy birthday, my love 🤍🤍</h2>
+        <p id="letterText"></p>
+      </div>
+      <button class="btn" onclick="nextPage(1)">Kembali ke Awal</button>
+    </div>
+  </div>
+
+  <!-- SISTEM UTAMA LOGIKA PASSWORD DAN INTERAKTIF -->
+  <script>
+    let currentPin = "";
+    const correctPin = "200205"; // Password ultah resmi dari kamu
+
+    function pressKey(num) {
+      if (currentPin.length < 6) {
+        currentPin += num;
+        updateDots();
+      }
+      if (currentPin.length === 6) {
+        setTimeout(checkPin, 300);
+      }
+    }
+
+    function pressBackspace() {
+      if (currentPin.length > 0) {
+        currentPin = currentPin.slice(0, -1);
+        updateDots();
+      }
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dots .dot');
+      dots.forEach((dot, index) => {
+        if (index < currentPin.length) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    function checkPin() {
+      if (currentPin === correctPin) {
+        nextPage(2);
+      } else {
+        alert("DIH! Password salah sayang, masak iya gatau?");
+      }
+      currentPin = "";
+      updateDots();
+    }
+
+    function nextPage(pageNumber) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      const targetPage = document.getElementById('page' + pageNumber);
+      if (targetPage) {
+        targetPage.classList.add('active');
+        if (pageNumber === 9) {
+          startTypingEffect();
+        }
+      }
+    }
+
+    // Fungsi efek mengetik otomatis yang sudah diperbaiki dan diselesaikan
+    let typingTimeout;
+    function startTypingEffect() {
+      const text = "Selamat Ulang Tahun yang ke-24 Tahun, Orang tuaaa 🤍🤏🏻.  Di hari ulang tahun sayang skrang ini, venus ingin sayang tahu betapa bersyukurnya aku memilikimu. Maacii ya udah milih bertahan sama venus, bahkan di hari-hari yang dimana venus lagi ngga enak buat dicintai. Sayang ngajarin aku bahwa cinta itu bukan soal nemuin yg sempurna, tapi soal nerima, ngertiin, dan nggak nyerah. Venus juga banyak minta maaf ya krna venus terlalu berlebihan dalam menyalahkan sayang. Sayang, makasih ya udah jadi rumah paling tenang untuk venus. di dunia venus yang cukup berat ini, sayang bikin venus ngerasa aman. sekali lagi, terimakasih ya sudah menjadi pacar yang sabar, penyayang, dan selalu ada buat venus. Semoga semua cita-cita sayang tercapai dan hubungan kita bisa membaik, semakin dewasa, dan semakin mencintai satu sama lain. I love you more than words can say! 🤍";
+      const target = document.getElementById("letterText");
+      
+      if (!target) return;
+      
+      target.innerHTML = ""; 
+      clearTimeout(typingTimeout); 
+      
+      let i = 0;
+      function type() {
+        if (i < text.length) {
+          target.innerHTML += text.charAt(i);
+          i++;
+          typingTimeout = setTimeout(type, 50); // Kecepatan mengetik (50ms per karakter)
+        }
+      }
+      type();
+    }
+  </script>
+</body>
+</html>
